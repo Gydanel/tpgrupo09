@@ -1,0 +1,44 @@
+@startuml
+class Empresa 
+Empresa *-- Usuario
+
+class Usuario {
+- id: uint
+- nombre: String
+- contrasenia: String
+}
+
+Usuario <|- Tecnico
+Usuario <|- CallCenter
+Usuario <|- Admistrativo
+Usuario <|- AdministradorDeSistema
+
+class Tecnico
+class CallCenter
+class Admistrativo
+class AdministradorDeSistema
+
+class Cliente
+
+enum EstadoVisita {
+PROGRAMADO
+ENCURSO
+CANCELADO
+FINALIZADO
+}
+
+class Visita {
+- id: uint
+}
+Visita <|- Instalacion
+Visita <|- Reparacion
+Visita <-- EstadoVisita
+Visita "0..*" --- "1" Cliente
+Visita "1" --- "1..*" Tecnico
+class Factura {
+
+}
+
+class Instalacion
+class Reparacion
+@enduml
