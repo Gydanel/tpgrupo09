@@ -1,6 +1,15 @@
 @startuml
-class Empresa 
+
+class Empresa {
+ +Clientes()  List<Cliente>
+ +Visitas()   List<Visitas>
+ +Facturas()  List<Factura>
+ +Tecnicos()  List<Tecnico>
+ +Empleados() List<Usuario>
+}
 Empresa *-- Usuario
+Empresa *-- Visita
+Empresa *-- Factura
 
 class Usuario {
 - id: uint
@@ -13,13 +22,56 @@ Usuario <|- CallCenter
 Usuario <|- Admistrativo
 Usuario <|- AdministradorDeSistema
 
-class Tecnico
-class CallCenter
-class Admistrativo
-class AdministradorDeSistema
+class Articulo {
+ -nombre: String
+ -cantidadEnStock: Int
+ -costo: Float
+}
 
-class Cliente
+class Admistrativo {
+ +Facturar(v Visita, ...): Factura
+ +ConfirmarMargenes(fs List<Factura>) Float
+}
 
+class CallCenter {
+
+ +ProgramarVisita(c Cliente, tipo TipoVisita) Visita
+ +VerificarStock(...) List<Articulo>
+}
+
+class Tecnico {
+ +RealizarVisita(v Visita, ...) Visita
+ +VisitasPendientes() List<Visita>
+}
+Tecnico <-- TipoTecnico
+
+class AdministradorDeSistema {
+ +AgregarArticulo(a Articulo) // cambiar a algo mejor
+ +ActualizarStock(a Articulo)
+ +ActualizarCostoHorasTrabajo(...)
+}
+
+AdministradorDeSistema "1" <-- "0..*" Articulo
+
+class Cliente {
+ -id: Int
+ -nombre: String
+ -apellido: String
+ -Dni: String
+
+ +Visitas() List<Visita> 
+}
+
+enum TipoTecnico {
+ JUNIO
+ SEMI-SENIOR
+ SENIOR
+}
+
+enum TipoVisita {
+  INSATALACION
+  REPARACION
+}
 enum EstadoVisita {
 PROGRAMADO
 ENCURSO
@@ -30,15 +82,23 @@ FINALIZADO
 class Visita {
 - id: uint
 }
+
 Visita <|- Instalacion
 Visita <|- Reparacion
 Visita <-- EstadoVisita
 Visita "0..*" --- "1" Cliente
 Visita "1" --- "1..*" Tecnico
+Visita "1" --- "1..*" Costo
+Visita <-- TipoVisita
+
 class Factura {
 
 }
-
+Visita "1" --- "0..1" Factura
 class Instalacion
 class Reparacion
+class Costo {
+ -descripcion: String
+ -valor: Float
+}
 @enduml
